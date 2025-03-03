@@ -2,7 +2,7 @@ import type { NextFunction, Request, Response } from 'express';
 import { validationResult } from 'express-validator';
 
 //MIDDLEWARE DE VALIDACION DE ERRORES (FORMA DE TENER CODIGO REUTILIZABLE)
-
+ 
 //MIDDLEWARE PARA DETECTAR ERRORES EN EL REQUEST
 
 export const handleInputErrors = (req: Request, res: Response, next: NextFunction) => {

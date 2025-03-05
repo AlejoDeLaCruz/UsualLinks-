@@ -3,14 +3,14 @@
 import type { Request, Response } from "express"; //IMPORTAMOS LOS TIPOS DE REQ Y RES DESDE EXPRESS PARA QUE EL TYPE SEA CORRECTO
 import User from "../models/User";
 import { checkPassword, hashPassword } from "../utils/auth";
-import slug from "slug";
+import slug from "slug";    
 import { validationResult } from "express-validator";
 
 export const createAccount = async (req: Request, res: Response) => {
   try {
     /* const user = await User.create(req.body); */ // <------- PRIMERA MANERA DE AGREGAR REGISTROS GRACIAS AL ORM PODEMOS USAR ESTA FORMA SIN HACER TODO EL SQL
-    const { default: slugify } = await import("slug");
-    const { email, password } = req.body;
+    const { default: slugify } = await import("slug");    //LIBRERIA PARA AJUSTAR LA SINTAXIS DEL HANDLE (todo en minusculas y sin espacios en este caso)
+    const { email, password } = req.body; //OBTENEMOS EL BODY DE LA REQUEST
 
     const userExists = await User.findOne({ email }); //findOne es un metodo de MONGOOSE que es similar al WHERE de SQL.
 
@@ -41,7 +41,7 @@ export const createAccount = async (req: Request, res: Response) => {
 
 export const login = async (req: Request, res: Response) => {
   try {
-    const { email, password } = req.body;
+    const { email, password } = req.body; //OBTENEMOS EL BODY DE LA REQUEST
 
     const userExists = await User.findOne({ email }); //ESTO TIENE QUE SER ASINCRONO PARA QUE SE EJECUTE CORRECTAMENTE
     if (!userExists) {

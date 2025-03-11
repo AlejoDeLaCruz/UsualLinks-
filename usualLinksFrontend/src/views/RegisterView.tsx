@@ -1,9 +1,13 @@
 import { Link } from "react-router-dom";
 import { useForm } from "react-hook-form"; //Hook para formularios de react hook form
+import type { RegisterForm } from "../types/index";
 import ErrorMessage from "../components/ErrorMessage";
+import { isAxiosError } from "axios";
+import { toast } from "sonner";
+import { api } from "../config/axios";
 
 export default function RegisterView() {
-  const initialValues = {
+  const initialValues: RegisterForm = {
     name: "",
     email: "",
     handle: "",
@@ -14,13 +18,27 @@ export default function RegisterView() {
   const {
     register, //CONECTA EL CODIGO HTML CON REACT-HOOK-FORM
     watch,
+    reset,
     handleSubmit, //ENVIA EL FORMULARIO
     formState: { errors }, //CONTIENE LOS MENSAJES DE ERROR DE LOS REQUIRED
   } = useForm({ defaultValues: initialValues }); //INSTANCIA DE useForm Y SUS METODOS (hanldeSubmit, register, etc) con los initialValues
 
-  const handleRegister = () => {
-    console.log("desde handleRegister");
+  const handleRegister = async (formData: RegisterForm) => {
+    console.log(formData);
+    try {
+      const { data } = await api.post(`/auth/register`, formData); //USAMOS api.post EN LUGAR DE AXIOS PORQUE CREAMOS LA CONFIGURACION PARA QUE EL INICIO DE TODAS LAS URL SEA EL MISMO (IR A CONFIG/AXIOS.TS)
+      reset(); //RESETEA TODO EL FORMULARIO UNA VEZ ENVIADO
+      console.log(data.message); //Esto trae el mensaje de que se agrego correctamente
+      toast.success(data.message); //NOTIFICACION
+    } catch (e) {
+      if (isAxiosError(e) && e.response) {
+        toast.error(e.response.data.error);
+        console.log(e.response.data.error);
+      }
+    }
   };
+
+  const password = watch("password");
 
   return (
     <>
@@ -57,6 +75,10 @@ export default function RegisterView() {
             className="bg-slate-100 border-none p-3 rounded-lg placeholder-slate-400"
             {...register("email", {
               required: "El email es obligatorio",
+              pattern: {
+                value: /\S+@\S+\.\S+/,
+                message: "E-mail no válido", //VALIDACION PARA QUE SEA FORMATO EMAIL
+              },
             })}
           />
           {errors.email && <ErrorMessage>{errors.email.message}</ErrorMessage>}
@@ -80,15 +102,19 @@ export default function RegisterView() {
         </div>
         <div className="grid grid-cols-1 space-y-3">
           <label htmlFor="password" className="text-2xl text-slate-500">
-            Password
+            Contraseña
           </label>
           <input
             id="password"
             type="password"
-            placeholder="Password de Registro"
+            placeholder="Contraseña de Registro"
             className="bg-slate-100 border-none p-3 rounded-lg placeholder-slate-400"
             {...register("password", {
-              required: "El password es obligatorio",
+              required: "La contraseña es obligatoria",
+              minLength: {
+                value: 8,
+                message: "La contraseña debe tener mínimo 8 caracteres",
+              },
             })}
           />
           {errors.password && (
@@ -101,15 +127,21 @@ export default function RegisterView() {
             htmlFor="password_confirmation"
             className="text-2xl text-slate-500"
           >
-            Repetir Password
+            Repetir contraseña
           </label>
           <input
             id="password_confirmation"
             type="password"
-            placeholder="Repetir Password"
+            placeholder="Repetir Contraseña"
             className="bg-slate-100 border-none p-3 rounded-lg placeholder-slate-400"
             {...register("password_confirmation", {
-              required: "El password repetido es obligatorio",
+              required: "La contraseña repetida es obligatoria",
+              minLength: {
+                value: 8,
+                message: "La contraseña debe tener mínimo 8 caracteres",
+              },
+              validate: (value) =>
+                value === password || "Las contraseñas no son iguales",
             })}
           />
           {errors.password_confirmation && (

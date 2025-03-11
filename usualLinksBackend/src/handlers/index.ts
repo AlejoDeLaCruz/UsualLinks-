@@ -33,7 +33,7 @@ export const createAccount = async (req: Request, res: Response) => {
     user.password = await hashPassword(password); //MANERA DE HASHEAR EL PASSWORD CON BCRYPT
     user.handle = handle; //CREAMOS EL HANDLE CON SU FORMATO AMIGABLE (slugify es la libreria que hace esto)
     await user.save(); // <------- SEGUNDA MANERA DE AGREGAR REGISTROS
-    res.status(200).json({ success: true, data: user }); //RETORNAR UN STATUS Y UNA RESPUESTA
+    res.status(200).json({ success: true, data: user, message: "Usuario creado correctamente" }); //RETORNAR UN STATUS Y UNA RESPUESTA
   } catch (e: any) {
     res.status(404).json({ success: false, data: e.message });
   }

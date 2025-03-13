@@ -3,8 +3,9 @@
 import type { Request, Response } from "express"; //IMPORTAMOS LOS TIPOS DE REQ Y RES DESDE EXPRESS PARA QUE EL TYPE SEA CORRECTO
 import User from "../models/User";
 import { checkPassword, hashPassword } from "../utils/auth";
-import slug from "slug";    
+import slug from "slug";
 import { validationResult } from "express-validator";
+import { generateJWT } from "../utils/jwt";
 
 export const createAccount = async (req: Request, res: Response) => {
   try {
@@ -60,7 +61,10 @@ export const login = async (req: Request, res: Response) => {
       return;
     }
 
-    res.send('Autenticando...')
+    //RETORNAMOS UN JWT (EL JSON WEB TOKEN ES EL TOKEN QUE TENEMOS EN EL APPLICATION DE ARDID, TREMENDO)
+    const token = generateJWT({ id: userExists.id })
+    res.send(token);
+
   } catch (e: any) {
     res.status(404).json({ success: false, data: e.message });
   }

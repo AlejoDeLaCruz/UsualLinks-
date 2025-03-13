@@ -9,3 +9,7 @@ export type RegisterForm = Pick<User, "handle" | "name" | "email"> & {
     password: string,
     password_confirmation: string
 } //EL PICK AGARRA CAMPOS ESPECIFICOS DE OTRO TYPE DIFERENTE EN ESTE CASO USER
+
+export type LoginForm = Pick<User, "email"> & {
+    password: string,
+}

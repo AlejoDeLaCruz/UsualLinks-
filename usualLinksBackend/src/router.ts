@@ -1,11 +1,11 @@
 //ESTE ARCHIVO TIENE LAS RUTAS DE URL DE LOS METODOS (OSEA LAS URL QUE TIENEN LOS METODOS GET, POST, PUT, DELETE)
 import { Router } from "express";
 import { body } from "express-validator"; //EXPRESS VALIDATOR SIRVE PARA VALIDAR COSAS CON EXPRESS EN ESTE CASO EL BODY (LO QUE ENVIA EL USUARIO)
-import { createAccount, login } from "./handlers/index";
+import { createAccount, getUser, login } from "./handlers/index";
 import { handleInputErrors } from "./middleware/validation";
 
 const router = Router();
- 
+
 //ROUTING
 
 //EL GET SIEMPRE TOMA REQ Y RES
@@ -85,5 +85,7 @@ router.post('/auth/login',
   handleInputErrors,
   login
 );
+
+router.get('/user', getUser)
 
 export default router;

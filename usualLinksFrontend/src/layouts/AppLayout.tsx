@@ -1,8 +1,26 @@
 import { Link, Outlet } from "react-router-dom";
 import { Toaster } from "sonner";
 import NavigationTabs from "../components/NavigationTabs";
+import { useQuery } from "@tanstack/react-query";
+import { getUser } from "../api/UsualLinksApi";
 
 export default function AppLayout() {
+  const {
+    data, //Retorna los datos
+    isLoading, //Retorna si esta cargando mientras carga es true y una vez que cargo false
+    error, //Retorna el error
+    isError, //Retorna un booleano
+  } = useQuery({
+    queryFn: getUser, //QUE FUNCION VA A HACER LA CONSULTA (la funcion axios o fetch)
+    queryKey: ["User"], //ES LA FORMA EN LA QUE REACT QUERY IDENTIFICA EL QUERY Y ES UNICO PARA CADA FUNCION (en este caso getUser)
+    retry: 1, //INTENTA UNA SOLA VEZ HACER LA QUERY
+    refetchOnWindowFocus: false, //Esto hace que no se hagan mas consultas si cambiamos de pestaña y regresamos a la pagina, es decir evita llamadas reiteradas no deseadas.
+  });
+
+  console.log(data);
+  console.log(isLoading);
+  
+
   return (
     <>
       <header className="bg-slate-800 py-5">

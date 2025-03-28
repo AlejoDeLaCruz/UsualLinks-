@@ -1,11 +1,19 @@
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
-import './index.css'
-import Router from './router'
+import { StrictMode } from "react";
+import { createRoot } from "react-dom/client";
+import "./index.css";
+import Router from "./router";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
+const queryClient = new QueryClient(); //instanciamos un cliente de reactQuery
 
-createRoot(document.getElementById('root')!).render(
+createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <Router/>
-  </StrictMode>,
-)
+    <QueryClientProvider client={queryClient}>
+      {" "}
+      {/*englobamos toda la aplicacion en react query */}
+      <Router />
+      <ReactQueryDevtools />
+    </QueryClientProvider>
+  </StrictMode>
+);

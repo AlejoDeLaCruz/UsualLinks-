@@ -6,7 +6,6 @@ import { checkPassword, hashPassword } from "../utils/auth";
 import slug from "slug";
 import { validationResult } from "express-validator";
 import { generateJWT } from "../utils/jwt";
-import jwt, { JwtPayload } from 'jsonwebtoken'
 
 export const createAccount = async (req: Request, res: Response) => {
   try {
@@ -72,39 +71,5 @@ export const login = async (req: Request, res: Response) => {
 };
 
 export const getUser = async (req: Request, res: Response) => {
-  //CADA USUARIO AUTENTICADO VA A ENVIAR SU JWT EN LOS HEADERS DE AUTORIZACION
-  console.log(req.headers.authorization); //Esto retorna el JWT en el formato Bearer (JWT)
-  const bearer = req.headers.authorization;
-
-  if (!bearer) {
-    const error = new Error('No Autorizado');
-    res.status(401).json({ error: error.message });
-    return;
-  }
-
-  //Validacion para manejar si el Bearer esta vacío
-  const [, token] = bearer.split(' ') //Usamos array destructuring para separar 'Bearer' del JWT e ignorar el espacio del medio solamente tomames el JWT
-
-  if (!token) {
-    const error = new Error('No Autorizado');
-    res.status(401).json({ error: error.message });
-    return;
-  }
-
-  //Verificamos si el JWT es valido
-  try {
-    const result = jwt.verify(token, process.env.JWT_SECRET);
-    if (typeof result == 'object' && result.id) {
-      const user = await User.findById(result.id).select('-password') //Gracias a mongoose (el select -password trae todos los campos menos el password)
-      if (!user) {
-        const error = new Error('El usuario no existe');
-        res.status(404).json({ error: error.message });
-        return;
-      }
-      res.json(user); //Enviamos la informacion del usuario en un json
-    }
-  } catch (e) {
-    res.status(500).json({ error: 'Token no valido' });
-  }
-
+    res.json(req.user); //HACEMOS EL GET DE TODA LA INFORMACION DEL USUARIO (antes hicimos la autenticacion con el middleware auth)
 }

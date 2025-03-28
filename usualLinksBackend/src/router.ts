@@ -3,6 +3,7 @@ import { Router } from "express";
 import { body } from "express-validator"; //EXPRESS VALIDATOR SIRVE PARA VALIDAR COSAS CON EXPRESS EN ESTE CASO EL BODY (LO QUE ENVIA EL USUARIO)
 import { createAccount, getUser, login } from "./handlers/index";
 import { handleInputErrors } from "./middleware/validation";
+import { authenticate } from "./middleware/auth";
 
 const router = Router();
 
@@ -86,6 +87,6 @@ router.post('/auth/login',
   login
 );
 
-router.get('/user', getUser)
+router.get('/user', authenticate, getUser)  //Antes de obtener el usuario autenticamos
 
 export default router;

@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import ErrorMessage from "../components/ErrorMessage";
 import { LoginForm } from "../types";
 import { isAxiosError } from "axios";
-import { api } from "../config/axios";
+import api from "../config/axios";
 import { toast } from "sonner";
 
 export default function LoginView() {
@@ -21,11 +21,11 @@ export default function LoginView() {
   const handleLogin = async (formData: LoginForm) => {
     console.log(formData);
     try {
-      const {data} = await api.post('/auth/login', formData)
-      console.log(data)
-      localStorage.setItem('AUTH_TOKEN', data); //PONEMOS EL TOKEN DE JWT EN LOCALSTORAGE
-    }catch(e){
-      if(isAxiosError(e) && e.response){
+      const { data } = await api.post("/auth/login", formData);
+      console.log(data);
+      localStorage.setItem("AUTH_TOKEN", data); //PONEMOS EL TOKEN DE JWT EN LOCALSTORAGE
+    } catch (e) {
+      if (isAxiosError(e) && e.response) {
         toast.error(e.response.data.error);
       }
     }
